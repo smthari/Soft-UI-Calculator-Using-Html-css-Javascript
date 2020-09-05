@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Nova+Round&display=swap');
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+background-size: 800% 800%;
+}
+
+.calculator {
+min-width: 273px;
+min-height: 448px;
+background: #5f657d;
+box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.15);
+font-family: Nova Round;
+font-style: normal;
+font-weight: normal;
+font-size: 24px;
+line-height: 29px;
+}
+
+.screen {
+width: 233px;
+height: 91px;
+background: #5f657d;
+box-shadow: inset 1px 1px 12px #1e1f20,
+ -2px -2px 10px rgb(151, 147, 147);
+margin: 20px 20px 20px 20px;
+}
+
+.screenContent {
+text-align: end;
+padding: 17px;
+font-size: 30px;
+}
+
+#result {
+font-size: 30px;
+line-height: 36px;
+margin-bottom: 5px;
+overflow: auto;
+user-select: all;
+}
+
+#resultText {
+color: #F7B731 !important;
+}
+
+.calculation {
+font-size: 12px;
+line-height: 14px;
+color: white;
+overflow: auto;
+}
+
+.numPad {
+width: 233px;
+height: 296px;
+margin: 20px 20px 20px 20px;
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+grid-template-rows: repeat(5, 1fr);
+grid-column-gap: 19px;
+grid-row-gap: 19px;
+}
+
+.style {
+background: #5f657d;
+box-shadow: 6px 6px 12px #1e1f20, 
+-2px -2px 10px rgb(151, 147, 147);
+color: white;
+display: flex;
+justify-content: center;
+align-items: center;
+cursor: pointer;
+}
+
+.styleOnClick {
+box-shadow: inset 2px 2px 4px #191A1E,
+inset -2px -2px 4px rgba(95, 94, 94, 0.25);
+font-size: 20px;
+opacity: 0.8;
+}
+
+.zero {
+width: 107px;
+height: 44px;
+grid-area: 5 / 1 / 6 / 3;
+}
+
+.equal {
+width: 44px;
+height: 170px;
+grid-area: 3 / 4 / 6 / 5;
+}
+</style>
+
+</head>
+
+<body>
+<div class="nightModeToggle">
+<div class="switch"></div>
+</div>
+
+<div class="calculator">
+<div class="screen">
+<div class="screenContent">
+<p id="result">
+<span id="resultText" style=" color: #373737">0</span>
+</p>
+<p class="calculation">
+<span id="calculationText"></span>
+</p>
+</div>
+</div>
+
+<div class="numPad">
+<div id="clear" class="style">C</div>
+<div id="division" class="style">/</div>
+<div id="multiplication" class="style">X</div>
+<div id="subtraction" class="style">-</div>
+<div id="num7" class="style">7</div>
+<div id="num8" class="style">8</div>
+<div id="num9" class="style">9</div>
+<div id="addition" class="style">+</div>
+<div id="num4" class="style">4</div>
+<div id="num5" class="style">5</div>
+<div id="num6" class="style">6</div>
+<div id="num1" class="style">1</div>
+<div id="num2" class="style">2</div>
+<div id="num3" class="style">3</div>
+<div id="num0" class="style zero">0</div>
+<div id="dot" class="style">.</div>
+<div id="equal" class="style equal">=</div>
+</div>
+</div>
+<script>
+
+    for (var item of document.querySelectorAll(".style")) {
+    item.addEventListener("mousedown", function (evt) {
+    evt.target.classList.add("styleOnClick");
+    }, false);
+    }
+    
+    document.getElementById('clear').addEventListener("mousedown", function () {
+    document.querySelector(".style").classList.add("styleOnClick");
+    });
+    
+    document.addEventListener("mouseup", function () {
+    for (var item of document.querySelectorAll(".style")) {
+    item.classList.remove("styleOnClick");
+    }
+    document.querySelector(".style").classList.remove("styleOnClick");
+    });
+    
+    const result = document.getElementById('resultText');
+    const calculation = document.getElementById('calculationText');
+    
+    function formula() {
+    var calMath = '';
+    calculation.textContent.split('').map(element => {
+    if (element === 'x') {
+    calMath += '*';
+    } else {
+    calMath += element;
+    }
+    });
+    return calMath;
+    }
+    
+    function calc(formula) {
+    if (['+', '-', "x", '/'].includes(formula[formula.length - 1])) {
+    formula = formula.slice(0, formula.length - 1);
+    }
+    return eval(formula);
+    }
+    
+    function wrightNum(num) {
+    calculation.textContent += num;
+    }
+    
+    function op(btn) {
+    if (calculation.textContent.length !== 0) {
+    if (!['+', '-', "x", '/'].includes(calculation.textContent[calculation.textContent.length - 1])) {
+    result.textContent = calc(formula());
+    calculation.textContent += btn;
+    } else {
+    calculation.textContent = calculation.textContent.slice(0, formula.length - 1);
+    calculation.textContent += btn;
+    }
+    }
+    }
+    
+    document.getElementById('num0').addEventListener('click', function () {
+    wrightNum(0)
+    }); +
+    document.getElementById('num1').addEventListener('click', function () {
+    wrightNum(1)
+    });
+    document.getElementById('num2').addEventListener('click', function () {
+    wrightNum(2)
+    });
+    document.getElementById('num3').addEventListener('click', function () {
+    wrightNum(3)
+    });
+    document.getElementById('num4').addEventListener('click', function () {
+    wrightNum(4)
+    });
+    document.getElementById('num5').addEventListener('click', function () {
+    wrightNum(5)
+    });
+    document.getElementById('num6').addEventListener('click', function () {
+    wrightNum(6)
+    });
+    document.getElementById('num7').addEventListener('click', function () {
+    wrightNum(7)
+    });
+    document.getElementById('num8').addEventListener('click', function () {
+    wrightNum(8)
+    });
+    document.getElementById('num9').addEventListener('click', function () {
+    wrightNum(9)
+    });
+    
+    
+    document.getElementById('addition').addEventListener('click', function () {
+    op('+')
+    });
+    document.getElementById('subtraction').addEventListener('click', function () {
+    op('-')
+    });
+    document.getElementById('division').addEventListener('click', function () {
+    op('/')
+    });
+    document.getElementById('multiplication').addEventListener('click', function () {
+    op('x')
+    });
+    
+    
+    document.getElementById('clear').addEventListener('click', function () {
+    calculation.textContent = '';
+    result.textContent = 0;
+    });
+    
+    document.getElementById('dot').addEventListener('click', function () {
+    op('.')
+    });
+    
+    document.getElementById('equal').addEventListener('click', function () {
+    result.textContent = (calc(formula()).length !== 0) ? calc(formula()) : result.textContent;
+    calculation.textContent = result.textContent;
+    });
+    
+    </script>
+</body>
+
+</html>
